@@ -25509,14 +25509,69 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const exec_1 = __nccwpck_require__(1514);
 const http_client_1 = __nccwpck_require__(6255);
+const utils_1 = __nccwpck_require__(1314);
+async function main() {
+    try {
+        const tolgee_secret = core.getInput('tolgee_secret', { required: true, trimWhitespace: true });
+        const author_name = core.getInput('author_name', { required: false, trimWhitespace: true });
+        const author_email = core.getInput('author_email', { required: false, trimWhitespace: true });
+        const commit_message = core.getInput('commit_message', { required: false, trimWhitespace: true });
+        core.debug('Extracting languages');
+        await (0, utils_1.updateLanguagesMetadata)(new http_client_1.HttpClient('VueTorrent GitHub Actions workflow'), tolgee_secret);
+        core.debug('Exporting locale data to ./src/locales');
+        await (0, utils_1.exportLocaleData)(tolgee_secret);
+        core.debug('Committing changes to repo');
+        await (0, utils_1.commitChanges)(author_name, author_email, commit_message);
+    }
+    catch (error) {
+        core.setFailed(error.message);
+    }
+}
+main();
+
+
+/***/ }),
+
+/***/ 1314:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.commitChanges = exports.exportLocaleData = exports.updateLanguagesMetadata = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const exec_1 = __nccwpck_require__(1514);
 const io_1 = __nccwpck_require__(7436);
 const io_util_1 = __nccwpck_require__(1962);
+const fs = __importStar(__nccwpck_require__(7147));
 const base_url = 'https://app.tolgee.io/v2';
 const languages_url = `${base_url}/projects/languages`;
 const export_url = `${base_url}/projects/export`;
-async function extractLanguages(httpClient, api_key) {
+async function extractProjectLanguages(httpClient, api_key) {
     const r_lang = await httpClient.getJson(languages_url, {
         'X-API-KEY': api_key
     });
@@ -25525,10 +25580,34 @@ async function extractLanguages(httpClient, api_key) {
         throw new Error(`HTTP request failed. Received: ${r_lang.statusCode}`);
     const projectLocales = r_lang.result._embedded.languages;
     return projectLocales.map(locale_metadata => ({
+        importSymbol: locale_metadata.tag.toLowerCase().replace('-', '_'),
+        enumName: locale_metadata.tag.toUpperCase().replace('-', '_'),
         tag: locale_metadata.tag,
         originalName: locale_metadata.originalName
-    }));
+    })).sort((a, b) => a.tag.localeCompare(b.tag));
 }
+async function updateLanguagesMetadata(httpClient, api_key) {
+    const metadata = await extractProjectLanguages(httpClient, api_key);
+    let generated = '';
+    // import statements
+    metadata.forEach(lang => (generated += `import ${lang.importSymbol} from './${lang.tag}.json'\n`));
+    // typedefs
+    generated += 'type LocaleDef = { title: string; value: Locales }\n\n';
+    // locales enum
+    generated += 'export enum Locales {\n';
+    metadata.forEach(lang => (generated += `  ${lang.enumName} = '${lang.tag}',\n`));
+    generated += '}\n\n';
+    // locales def
+    generated += 'export const LOCALES: LocaleDef[] = [\n';
+    metadata.forEach(lang => (generated += `  { title: '${lang.originalName}', value: Locales.${lang.enumName},\n`));
+    generated += ']\n\n';
+    // i18n messages
+    generated += 'export const messages: Record<Locales, any> = {\n';
+    metadata.forEach(lang => (generated += `  [Locales.${lang.enumName}]: ${lang.importSymbol},\n`));
+    generated += '}\n\nexport const defaultLocale = Locales.EN\nexport const fallbackLocale = Locales.EN\n';
+    fs.writeFileSync('./src/locales/index.ts', generated);
+}
+exports.updateLanguagesMetadata = updateLanguagesMetadata;
 async function exportLocaleData(api_key) {
     const curlPath = await (0, io_1.which)('curl', true);
     const unzipPath = await (0, io_1.which)('unzip', true);
@@ -25536,28 +25615,20 @@ async function exportLocaleData(api_key) {
     await (0, exec_1.exec)(unzipPath, ['-o', '-d', './src/locales', 'locales.zip']);
     await (0, io_util_1.rm)('locales.zip');
 }
-async function commitChanges(commit_message) {
+exports.exportLocaleData = exportLocaleData;
+async function commitChanges(committer_name, committer_email, commit_message) {
+    if (committer_name === '' || committer_email === '' || commit_message === '') {
+        core.debug('Info not passed, skipping commit step');
+        return;
+    }
     const gitPath = await (0, io_1.which)('git', true);
-    await (0, exec_1.exec)(gitPath, ['status']);
-    // await exec(gitPath, ['add', '.'])
-    // await exec(gitPath, ['commit', '-m', commit_message])
+    await (0, exec_1.exec)(gitPath, ['add', '.']);
+    await (0, exec_1.exec)(gitPath, ['config', '--global', 'user.name', committer_name]);
+    await (0, exec_1.exec)(gitPath, ['config', '--global', 'user.email', committer_email]);
+    await (0, exec_1.exec)(gitPath, ['commit', '-m', commit_message]);
+    await (0, exec_1.exec)(gitPath, ['push']);
 }
-async function main() {
-    try {
-        const tolgee_secret = core.getInput('tolgee-secret', { required: true, trimWhitespace: true });
-        const httpClient = new http_client_1.HttpClient('VueTorrent GitHub Actions workflow');
-        core.debug('Extracting languages');
-        core.info(JSON.stringify(await extractLanguages(httpClient, tolgee_secret)));
-        core.debug('Exporting locale data to ./src/locales');
-        core.info(JSON.stringify(await exportLocaleData(tolgee_secret)));
-        core.debug('Committing changes to repo');
-        await commitChanges('chore(localization): Update locales');
-    }
-    catch (error) {
-        core.setFailed(error.message);
-    }
-}
-main();
+exports.commitChanges = commitChanges;
 
 
 /***/ }),

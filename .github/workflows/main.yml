@@ -13,3 +13,4 @@ jobs:
         uses: ./
         with:
           tolgee-secret: ${{ secrets.TOLGEE_API_KEY }}
+          commit-message: 'chore(localization): Update locales'
