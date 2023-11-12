@@ -4,12 +4,11 @@ import { HttpClient } from '@actions/http-client'
 import { mkdirP, which } from '@actions/io'
 import { rm } from '@actions/io/lib/io-util'
 import * as fs from 'fs'
-import { Writable } from 'stream'
 import { LanguageResponse } from './types'
 
 const base_url = 'https://app.tolgee.io/v2'
 const languages_url = `${ base_url }/projects/languages`
-const export_url = `${ base_url }/projects/export`
+const export_url = `${ base_url }/projects/export?format=JSON&filterState=TRANSLATED%2CREVIEWED%2CDISABLED`
 
 async function extractProjectLanguages(httpClient: HttpClient, api_key: string) {
   const r_lang = await httpClient.getJson<LanguageResponse>(languages_url, {

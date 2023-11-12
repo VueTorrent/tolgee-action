@@ -25570,7 +25570,7 @@ const io_util_1 = __nccwpck_require__(1962);
 const fs = __importStar(__nccwpck_require__(7147));
 const base_url = 'https://app.tolgee.io/v2';
 const languages_url = `${base_url}/projects/languages`;
-const export_url = `${base_url}/projects/export`;
+const export_url = `${base_url}/projects/export?format=JSON&filterState=TRANSLATED%2CREVIEWED%2CDISABLED`;
 async function extractProjectLanguages(httpClient, api_key) {
     const r_lang = await httpClient.getJson(languages_url, {
         'X-API-KEY': api_key
