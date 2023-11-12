@@ -4,6 +4,7 @@ import { HttpClient } from '@actions/http-client'
 import { mkdirP, which } from '@actions/io'
 import { rm } from '@actions/io/lib/io-util'
 import * as fs from 'fs'
+import { Writable } from 'stream'
 import { LanguageResponse } from './types'
 
 const base_url = 'https://app.tolgee.io/v2'
@@ -72,6 +73,12 @@ export async function commitChanges(committer_name: string, committer_email: str
   }
 
   const gitPath = await which('git', true)
+
+  if ((await exec(gitPath, ['diff', '--exit-code'])) === 0) {
+    core.info('Nothing to commit.')
+    return
+  }
+
   await exec(gitPath, ['add', '.'])
   await exec(gitPath, ['config', '--global', 'user.name', committer_name])
   await exec(gitPath, ['config', '--global', 'user.email', committer_email])

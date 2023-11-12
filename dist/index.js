@@ -25623,6 +25623,10 @@ async function commitChanges(committer_name, committer_email, commit_message) {
         return;
     }
     const gitPath = await (0, io_1.which)('git', true);
+    if ((await (0, exec_1.exec)(gitPath, ['diff', '--exit-code'])) === 0) {
+        core.info('Nothing to commit.');
+        return;
+    }
     await (0, exec_1.exec)(gitPath, ['add', '.']);
     await (0, exec_1.exec)(gitPath, ['config', '--global', 'user.name', committer_name]);
     await (0, exec_1.exec)(gitPath, ['config', '--global', 'user.email', committer_email]);
