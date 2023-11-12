@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import { exec } from '@actions/exec'
 import { HttpClient } from '@actions/http-client'
-import { which } from '@actions/io'
+import { mkdirP, which } from '@actions/io'
 import { rm } from '@actions/io/lib/io-util'
 import * as fs from 'fs'
 import { LanguageResponse } from './types'
@@ -52,6 +52,7 @@ export async function updateLanguagesMetadata(httpClient: HttpClient, api_key: s
   metadata.forEach(lang => (generated += `  [Locales.${ lang.enumName }]: ${ lang.importSymbol },\n`))
   generated += '}\n\nexport const defaultLocale = Locales.EN\nexport const fallbackLocale = Locales.EN\n'
 
+  await mkdirP('./src/locales')
   fs.writeFileSync('./src/locales/index.ts', generated)
 }
 

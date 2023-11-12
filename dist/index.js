@@ -25605,6 +25605,7 @@ async function updateLanguagesMetadata(httpClient, api_key) {
     generated += 'export const messages: Record<Locales, any> = {\n';
     metadata.forEach(lang => (generated += `  [Locales.${lang.enumName}]: ${lang.importSymbol},\n`));
     generated += '}\n\nexport const defaultLocale = Locales.EN\nexport const fallbackLocale = Locales.EN\n';
+    await (0, io_1.mkdirP)('./src/locales');
     fs.writeFileSync('./src/locales/index.ts', generated);
 }
 exports.updateLanguagesMetadata = updateLanguagesMetadata;
