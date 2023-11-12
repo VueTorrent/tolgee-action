@@ -25623,7 +25623,11 @@ async function commitChanges(committer_name, committer_email, commit_message) {
         return;
     }
     const gitPath = await (0, io_1.which)('git', true);
-    if ((await (0, exec_1.exec)(gitPath, ['diff', '--exit-code'])) === 0) {
+    let hasChanged = false;
+    await (0, exec_1.exec)(gitPath, ['diff', '--exit-code'])
+        .then(value => hasChanged = value !== 0)
+        .catch(() => (hasChanged = true));
+    if (!hasChanged) {
         core.info('Nothing to commit.');
         return;
     }

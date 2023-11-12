@@ -73,7 +73,13 @@ export async function commitChanges(committer_name: string, committer_email: str
 
   const gitPath = await which('git', true)
 
-  if ((await exec(gitPath, ['diff', '--exit-code'])) === 0) {
+  let hasChanged = false
+
+  await exec(gitPath, ['diff', '--exit-code'])
+  .then(value => hasChanged = value !== 0)
+  .catch(() => (hasChanged = true))
+
+  if (!hasChanged) {
     core.info('Nothing to commit.')
     return
   }
