@@ -12,5 +12,7 @@ jobs:
       - name: Update locales
         uses: ./
         with:
-          tolgee-secret: ${{ secrets.TOLGEE_API_KEY }}
-          commit-message: 'chore(localization): Update locales'
+          tolgee_secret: ${{ secrets.TOLGEE_API_KEY }}
+          author_name: 'Larsluph'
+          author_email: 'larsluph@gmail.com'
+          commit_message: 'chore(localization): Update locales'
