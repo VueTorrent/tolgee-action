@@ -13,10 +13,10 @@ async function extractLanguages(httpClient: HttpClient, api_key: string) {
   const r_lang = await httpClient.getJson<LanguageResponse>(languages_url, {
     'X-API-KEY': api_key
   })
+  core.debug(JSON.stringify(r_lang.result))
 
-  if (r_lang.statusCode !== 200) throw new Error(`HTTP request failed. Received: ${ r_lang.statusCode }`)
+  if (r_lang.statusCode !== 200 || !r_lang.result) throw new Error(`HTTP request failed. Received: ${ r_lang.statusCode }`)
 
-  // @ts-ignore
   const projectLocales = r_lang.result[0]
   return projectLocales.map(locale_metadata => ({
     tag: locale_metadata.tag,
@@ -33,7 +33,7 @@ async function exportLocaleData(api_key: string) {
   await rm('locales.zip')
 }
 
-async function checkoutChanges(commit_message: string) {
+async function commitChanges(commit_message: string) {
   const gitPath = await which('git', true)
   await exec(gitPath, ['status'])
   // await exec(gitPath, ['add', '.'])
@@ -45,9 +45,12 @@ async function main() {
     const tolgee_secret = core.getInput('tolgee-secret', { required: true, trimWhitespace: true })
     const httpClient = new HttpClient('VueTorrent GitHub Actions workflow')
 
+    core.debug('Extracting languages')
     core.info(JSON.stringify(await extractLanguages(httpClient, tolgee_secret)))
+    core.debug('Exporting locale data to ./src/locales')
     core.info(JSON.stringify(await exportLocaleData(tolgee_secret)))
-    await checkoutChanges('chore(localization): Update locales')
+    core.debug('Committing changes to repo')
+    await commitChanges('chore(localization): Update locales')
   } catch (error: any) {
     core.setFailed(error.message)
   }
