@@ -17,7 +17,7 @@ async function extractLanguages(httpClient: HttpClient, api_key: string) {
 
   if (r_lang.statusCode !== 200 || !r_lang.result) throw new Error(`HTTP request failed. Received: ${ r_lang.statusCode }`)
 
-  const projectLocales = r_lang.result[0]
+  const projectLocales = r_lang.result._embedded.languages
   return projectLocales.map(locale_metadata => ({
     tag: locale_metadata.tag,
     originalName: locale_metadata.originalName

@@ -25523,7 +25523,7 @@ async function extractLanguages(httpClient, api_key) {
     core.debug(JSON.stringify(r_lang.result));
     if (r_lang.statusCode !== 200 || !r_lang.result)
         throw new Error(`HTTP request failed. Received: ${r_lang.statusCode}`);
-    const projectLocales = r_lang.result[0];
+    const projectLocales = r_lang.result._embedded.languages;
     return projectLocales.map(locale_metadata => ({
         tag: locale_metadata.tag,
         originalName: locale_metadata.originalName
