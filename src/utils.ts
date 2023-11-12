@@ -84,6 +84,8 @@ export async function commitChanges(committer_name: string, committer_email: str
     return
   }
 
+  core.info('Changes detected. Commiting to repo...')
+
   await exec(gitPath, ['add', '.'])
   await exec(gitPath, ['config', '--global', 'user.name', committer_name])
   await exec(gitPath, ['config', '--global', 'user.email', committer_email])

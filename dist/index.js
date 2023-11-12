@@ -25631,6 +25631,7 @@ async function commitChanges(committer_name, committer_email, commit_message) {
         core.info('No changes detected. Skipping commit step...');
         return;
     }
+    core.info('Changes detected. Commiting to repo...');
     await (0, exec_1.exec)(gitPath, ['add', '.']);
     await (0, exec_1.exec)(gitPath, ['config', '--global', 'user.name', committer_name]);
     await (0, exec_1.exec)(gitPath, ['config', '--global', 'user.email', committer_email]);
