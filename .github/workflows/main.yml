@@ -15,6 +15,4 @@ jobs:
         uses: ./
         with:
           tolgee_secret: ${{ secrets.TOLGEE_API_KEY }}
-          author_name: 'Larsluph'
-          author_email: 'larsluph@gmail.com'
           commit_message: 'chore(localization): Update locales'
