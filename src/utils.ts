@@ -80,7 +80,7 @@ export async function commitChanges(committer_name: string, committer_email: str
   .catch(() => (hasChanged = true))
 
   if (!hasChanged) {
-    core.info('Nothing to commit.')
+    core.info('No changes detected. Skipping commit step...')
     return
   }
 

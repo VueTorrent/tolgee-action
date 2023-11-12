@@ -25628,7 +25628,7 @@ async function commitChanges(committer_name, committer_email, commit_message) {
         .then(value => hasChanged = value !== 0)
         .catch(() => (hasChanged = true));
     if (!hasChanged) {
-        core.info('Nothing to commit.');
+        core.info('No changes detected. Skipping commit step...');
         return;
     }
     await (0, exec_1.exec)(gitPath, ['add', '.']);
