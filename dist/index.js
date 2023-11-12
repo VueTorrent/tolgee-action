@@ -25592,14 +25592,14 @@ async function updateLanguagesMetadata(httpClient, api_key) {
     // import statements
     metadata.forEach(lang => (generated += `import ${lang.importSymbol} from './${lang.tag}.json'\n`));
     // typedefs
-    generated += 'type LocaleDef = { title: string; value: Locales }\n\n';
+    generated += '\ntype LocaleDef = { title: string; value: Locales }\n\n';
     // locales enum
     generated += 'export enum Locales {\n';
     metadata.forEach(lang => (generated += `  ${lang.enumName} = '${lang.tag}',\n`));
     generated += '}\n\n';
     // locales def
     generated += 'export const LOCALES: LocaleDef[] = [\n';
-    metadata.forEach(lang => (generated += `  { title: '${lang.originalName}', value: Locales.${lang.enumName},\n`));
+    metadata.forEach(lang => (generated += `  { title: '${lang.originalName}', value: Locales.${lang.enumName} },\n`));
     generated += ']\n\n';
     // i18n messages
     generated += 'export const messages: Record<Locales, any> = {\n';
