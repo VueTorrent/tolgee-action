@@ -1,0 +1,14 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  test-job:
+    runs-on: ubuntu-latest
+    name: Test job to run the custom action
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update locales
+        uses: ./
+        with:
+          tolgee-secret: ${{ secrets.TOLGEE_API_KEY }}

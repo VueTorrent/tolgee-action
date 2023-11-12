@@ -2,7 +2,7 @@
   "name": "vt-tolgee-action",
   "version": "1.0.0",
   "description": "Test repo for creating a JS github action",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/Larsluph/vt-tolgee-action/issues"
   },
-  "homepage": "https://github.com/Larsluph/vt-tolgee-action#readme"
+  "homepage": "https://github.com/Larsluph/vt-tolgee-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0"
+  }
 }

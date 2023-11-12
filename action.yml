@@ -1,0 +1,12 @@
+name: 'Tolgee Actions'
+description: 'Extract metadata and data from Tolgee project'
+inputs:
+  tolgee-secret:
+    description: 'Valid API key for the Tolgee project to use'
+    required: true
+outputs:
+  locales:
+    description: 'List of locales exported from project'
+runs:
+  using: node20
+  main: 'src/index.js'
