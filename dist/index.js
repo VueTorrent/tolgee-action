@@ -24833,8 +24833,8 @@ async function extractProjectLanguages(httpClient, api_key) {
         throw new Error(`HTTP request failed. Received: ${r_lang.statusCode}`);
     const projectLocales = r_lang.result._embedded.languages;
     return projectLocales.map(locale_metadata => ({
-        importSymbol: locale_metadata.tag.toLowerCase().replace('-', '_'),
-        enumName: locale_metadata.tag.toUpperCase().replace('-', '_'),
+        importSymbol: locale_metadata.tag.toLowerCase(),
+        enumName: locale_metadata.tag.toUpperCase(),
         tag: locale_metadata.tag,
         originalName: locale_metadata.originalName
     }))
