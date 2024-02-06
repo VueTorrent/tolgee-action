@@ -11,6 +11,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update locales
+        run: |
+          curl -H 'X-API-KEY: ${{ secrets.TOLGEE_API_KEY }}' 'https://app.tolgee.io/v2/projects/export' -o locales.zip
+          unzip -o -d ./src/locales locales.zip
+          rm locales.zip
+
       - name: Update locales
         uses: ./
         with:
