@@ -1,5 +1,5 @@
 {
-  "name": "vt-tolgee-action",
+  "name": "tolgee-action",
   "private": true,
   "version": "1.0.0",
   "description": "JS github action to generate language metadata from Tolgee project",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Larsluph/vt-tolgee-action.git"
+    "url": "git+ssh://git@github.com/VueTorrent/tolgee-action.git"
   },
   "author": "Larsluph",
-  "license": "ISC",
+  "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/Larsluph/vt-tolgee-action/issues"
+    "url": "https://github.com/VueTorrent/tolgee-action/issues"
   },
-  "homepage": "https://github.com/Larsluph/vt-tolgee-action#readme",
+  "homepage": "https://github.com/VueTorrent/tolgee-action#readme",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/http-client": "^2.2.0",
