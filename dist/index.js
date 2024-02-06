@@ -24833,12 +24833,12 @@ async function extractProjectLanguages(httpClient, api_key) {
         throw new Error(`HTTP request failed. Received: ${r_lang.statusCode}`);
     const projectLocales = r_lang.result._embedded.languages;
     return projectLocales.map(locale_metadata => ({
-        importSymbol: locale_metadata.tag.toLowerCase(),
-        enumName: locale_metadata.tag.toUpperCase(),
+        importSymbol: locale_metadata.tag.toLowerCase().replace('-', '_'),
+        enumName: locale_metadata.tag.toUpperCase().replace('-', '_'),
         tag: locale_metadata.tag,
         originalName: locale_metadata.originalName
     }))
-        .filter(v => fs.existsSync(`./src/locales/${v.importSymbol}.json`))
+        .filter(v => fs.existsSync(`./src/locales/${v.tag}.json`))
         .sort((a, b) => a.tag.localeCompare(b.tag));
 }
 async function updateLanguagesMetadata(httpClient, api_key) {
