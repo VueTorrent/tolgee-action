@@ -5,9 +5,8 @@
   "description": "Test repo for creating a JS github action",
   "main": "src/index.ts",
   "scripts": {
-    "premain": "npm run build",
-    "main": "node dist/index.js",
-    "build": "ncc build src/index.ts",
+    "main": "ncc run src/index.ts",
+    "build": "ncc build src/index.ts -mt",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
