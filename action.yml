@@ -1,5 +1,5 @@
 name: 'Tolgee Actions'
-description: 'Extract metadata and data from Tolgee project'
+description: 'Extract metadata from Tolgee project'
 inputs:
   tolgee_secret:
     description: 'Valid API key for the Tolgee project to use'
