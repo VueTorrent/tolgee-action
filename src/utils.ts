@@ -52,4 +52,5 @@ export async function updateLanguagesMetadata(httpClient: HttpClient, api_key: s
 
   await mkdirP('./src/locales')
   fs.writeFileSync('./src/locales/index.ts', generated)
+  core.debug(generated)
 }
