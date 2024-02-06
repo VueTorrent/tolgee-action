@@ -1,5 +1,6 @@
 {
   "name": "vt-tolgee-action",
+  "private": true,
   "version": "1.0.0",
   "description": "Test repo for creating a JS github action",
   "main": "src/index.ts",
