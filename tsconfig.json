@@ -1,20 +1,19 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "composite": true,
-    "target": "ES2022",
-    "module": "NodeNext",
-    "rootDir": "./src",
-    "moduleResolution": "NodeNext",
-    "baseUrl": "./",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "noImplicitAny": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "newLine": "lf",
+    "noImplicitAny": true,
+    "outDir": "./.build",
+    "rootDir": "src",
     "skipLibCheck": true,
-    "newLine": "lf"
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2022"
   },
-  "exclude": ["./dist", "./node_modules", "./__tests__", "./coverage", "./src/locales"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["./dist", "./.build", "./node_modules", "./__tests__", "./coverage", "./src/locales"]
 }
